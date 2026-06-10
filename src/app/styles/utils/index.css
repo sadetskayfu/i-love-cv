@@ -1,0 +1,14 @@
+@import './lucide.css';
+@import './moveable.css';
+
+::selection {
+	background-color: var(--color-green-200);
+}
+
+@layer utilities {
+	.my-container {
+		max-width: calc(var(--container-width) + var(--container-px) * 2);
+		margin-inline: auto;
+		padding-inline: var(--container-px);
+	}
+}

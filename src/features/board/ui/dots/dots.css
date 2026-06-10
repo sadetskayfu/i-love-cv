@@ -1,0 +1,8 @@
+.dots {
+	background-image: radial-gradient(
+		var(--color-gray-300) var(--dot-size),
+		transparent var(--dot-size)
+	);
+	background-size: var(--grid-size) var(--grid-size);
+	background-position: var(--window-x) var(--window-y);
+}

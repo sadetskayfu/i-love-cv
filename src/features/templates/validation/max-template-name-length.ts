@@ -1,0 +1,1 @@
+export const MAX_TEMPLATE_NAME_LENGTH = 30;
