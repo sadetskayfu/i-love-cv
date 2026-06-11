@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
 import {
+	copiedNodesAtom,
 	domNodesAtom,
 	historyAtom,
 	historyIndexAtom,
@@ -77,6 +78,15 @@ export const isMaxZoom = atom(get => {
 
 	return windowPosition.zoom === MAX_ZOOM;
 });
+
+export const hasCopiedNodes = atom(get => {
+	const copiedNodes = get(copiedNodesAtom)
+
+	if (copiedNodes.length > 0) {
+		return true
+	}
+	return false
+})
 
 // --- History ---
 export const hasRedo = atom(get => {

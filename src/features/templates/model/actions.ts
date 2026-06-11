@@ -10,9 +10,11 @@ const onChangeTemplate = atom(null, (_, set, templateId: string) => {
 	const nodes = loadStoredNodes(templateId)
 
 	set(boardActions.resetWindowPosition)
+	set(boardActions.clearSelectedNodes)
 	set(boardState.historyAtom, nodes ? [nodes] : [[]]);
 	set(boardState.historyIndexAtom, 0)
 	set(boardState.nodesAtom, nodes ?? [])
+	set(boardState.copiedNodesAtom, [])
 	set(activeTemplateIdAtom, templateId);
 
 	updateStoredActiveTemplateId(templateId);

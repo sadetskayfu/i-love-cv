@@ -8,6 +8,9 @@ export function useKeyboardShortcuts() {
 
 	const undo = useSetAtom(boardActions.undo);
 	const redo = useSetAtom(boardActions.redo);
+	const deleteNodes = useSetAtom(boardActions.deleteNodes)
+	const copyNodes = useSetAtom(boardActions.copyNodes)
+	const pasteNodes = useSetAtom(boardActions.pasteNodes)
 
 	function handleKeyboardShortcuts(event: React.KeyboardEvent) {
 		if (isNodeDragging) {
@@ -39,12 +42,15 @@ export function useKeyboardShortcuts() {
 		}
 
 		if ((event.ctrlKey || event.metaKey) && event.code === 'KeyC') {
+			copyNodes()
 		}
 
 		if ((event.ctrlKey || event.metaKey) && event.code === 'KeyV') {
+			pasteNodes()
 		}
 
 		if (event.key === 'Delete') {
+			deleteNodes()
 		}
 	}
 

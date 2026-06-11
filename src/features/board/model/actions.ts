@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
 import {
+	copiedNodesAtom,
 	historyAtom,
 	historyIndexAtom,
 	modeAtom,
@@ -42,6 +43,38 @@ export const updateNodes = atom(
 		});
 	}
 );
+
+export const deleteNodes = atom(null, (get, set) => {
+	const nodes = get(nodesAtom)
+	const selectedNodeIds = get(selectedNodeIdsAtom)
+	
+	const newNodes = nodes.filter((node) => !selectedNodeIds.has(node.id))
+
+	set(updateNodes, newNodes)
+	set(clearSelectedNodes)
+})
+
+export const copyNodes = atom(null, (get, set) => {
+	const nodes = get(nodesAtom)
+	const selectedNodeIds = get(selectedNodeIdsAtom)
+	const copiedNodes = nodes.filter((node) => selectedNodeIds.has(node.id))
+
+	set(copiedNodesAtom, copiedNodes)
+})
+
+export const pasteNodes = atom(null, (get, set) => {
+	const nodes = get(nodesAtom)
+	const copiedNodes = get(copiedNodesAtom)
+	const selectedIds = new Set<string>()
+	const nodesToPaste = copiedNodes.map((node) => {
+		const id = v4()
+		selectedIds.add(id)
+		return {...node, id}
+	})
+	
+	set(updateNodes, [...nodes, ...nodesToPaste])
+	set(selectedNodeIdsAtom, selectedIds)
+})
 
 export const addTextNode = atom(null, (get, set, cursorPosition: Position) => {
 	const creationRect = get(selectionRectAtom);

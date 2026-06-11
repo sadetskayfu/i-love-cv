@@ -4,6 +4,7 @@ import type { Mode, Node, WindowPosition, Rect } from './types';
 // --- Nodes ---
 export const nodesAtom = atom<Node[]>([]);
 export const domNodesAtom = atom<Record<string, HTMLElement>>({});
+export const copiedNodesAtom = atom<Node[]>([])
 export const isNodesDraggingAtom = atom<boolean>(false);
 
 // --- Selection ---
