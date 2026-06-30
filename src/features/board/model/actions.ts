@@ -8,7 +8,6 @@ import {
 	nodeIdInEditAtom,
 	nodesAtom,
 	selectedNodeIdsAtom,
-	selectionRectAtom,
 	visualSelectedNodeIdsAtom,
 	windowPositionAtom,
 } from './state';

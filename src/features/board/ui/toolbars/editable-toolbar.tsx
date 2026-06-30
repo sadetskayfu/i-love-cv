@@ -5,13 +5,10 @@ import { Tooltip, TooltipGroup } from '@/shared/ui/tooltip';
 import { Key } from '@/shared/ui/key';
 import { Button, ButtonProvider } from '@/shared/ui/button';
 import { ColorButton } from '@/shared/ui/color-button';
-import { useAtom } from 'jotai';
-import { boardSelectors } from '../../model';
 
 export function EditableToolbar() {
 	const { fontColors, backgroundColors } = Editable.useContext();
 	const { t } = useTranslation();
-	const [zoom] = useAtom(boardSelectors.windowZoom);
 
 	return (
 		<div className="flex rounded-md bg-white p-1">
