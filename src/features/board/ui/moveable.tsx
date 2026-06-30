@@ -493,6 +493,7 @@ export function Moveable() {
 					);
 				}
 			}}
-		/>
+		>
+		</MoveableComponent>
 	);
 }
