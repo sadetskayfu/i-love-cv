@@ -63,10 +63,10 @@ export const Item = React.memo(function TemplateItem(
 					<Icon.EllipsisVertical />
 				</Menu.Trigger>
 				<Menu.Popup className="duration-0" side="left">
-					<Menu.Item onClick={() => setOpenRenameDialog(true)}>
+					<Menu.Item nativeButton render={<button/>} onClick={() => setOpenRenameDialog(true)}>
 						Change name <Icon.Edit />
 					</Menu.Item>
-					<Menu.Item disabled={disabledDelete} onClick={() => deleteTemplate(id)}>
+					<Menu.Item nativeButton render={<button/>} disabled={disabledDelete} onClick={() => deleteTemplate(id)}>
 						Delete <Icon.Trash />
 					</Menu.Item>
 				</Menu.Popup>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const prodErrorMessage = 'ERR_CTX';
+const PROD_ERR_MESSAGE = 'ERR_CTX';
 
 export function useContext<Context, Required extends boolean = true>(
 	context: React.Context<Context | undefined>,
@@ -12,7 +12,7 @@ export function useContext<Context, Required extends boolean = true>(
 	if (!reactContext && required) {
 		const isProduction = false;
 
-		throw new Error(isProduction ? prodErrorMessage : errorMessage);
+		throw new Error(isProduction ? PROD_ERR_MESSAGE : errorMessage);
 	}
 
 	return reactContext as Required extends true ? Context : Context | undefined;

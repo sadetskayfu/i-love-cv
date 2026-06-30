@@ -45,11 +45,11 @@ function zoomToCenter(
 export function useWindowZoom(canvasRect: ElementRect | null) {
 	const [isWindowDragging] = useAtom(boardState.isWindowDraggingAtom);
 	const [isNodesDragging] = useAtom(boardState.isNodesDraggingAtom);
-	const [isSelectionRect] = useAtom(boardState.isSelectionRectAtom);
+	const [isRect] = useAtom(boardState.isRectAtom);
 	const setWindowPosition = useSetAtom(boardState.windowPositionAtom);
 
 	const handleWheel = useStableCallback((event: WheelEvent) => {
-		if (!canvasRect || isWindowDragging || isNodesDragging || isSelectionRect) {
+		if (!canvasRect || isWindowDragging || isNodesDragging || isRect) {
 			return;
 		}
 

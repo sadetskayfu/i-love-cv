@@ -6,7 +6,7 @@ export function DialogPopup(props: DialogPopup.Props) {
 	const { children, className, backdrop, portalTarget, ...otherProps } = props;
 
 	return (
-		<BaseDialog.Portal container={portalTarget}>
+		<BaseDialog.Portal container={portalTarget} onWheel={event => event.stopPropagation()}>
 			{backdrop && <BaseDialog.Backdrop render={<Backdrop />} />}
 			<BaseDialog.Popup
 				className={cn(

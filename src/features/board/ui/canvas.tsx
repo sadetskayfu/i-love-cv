@@ -5,6 +5,7 @@ import { useBoardContext } from './board-context';
 import { positionOnScreenToCanvas } from '../helpers';
 import { cn } from 'tailwind-variants';
 import { useWindowDragging } from '../hooks/use-window-dragging';
+import { BoardContextMenu } from './board-context-menu';
 
 export function Canvas({ children, ref, ...otherProps }: React.ComponentProps<'div'>) {
 	const [windowPosition] = useAtom(boardState.windowPositionAtom);
@@ -26,7 +27,7 @@ export function Canvas({ children, ref, ...otherProps }: React.ComponentProps<'d
 			ref={ref}
 			onPointerDown={handleWindowDraggingPointerDown}
 			onPointerUp={event => {
-				if (!canvasRect) {
+				if (!canvasRect || event.button !== 0) {
 					return;
 				}
 
@@ -38,7 +39,7 @@ export function Canvas({ children, ref, ...otherProps }: React.ComponentProps<'d
 							canvasRect
 						)
 					);
-					toggleMode('selection', false);
+					toggleMode('selection', false, false);
 				}
 
 				if (mode === 'add-shape-node') {
@@ -49,12 +50,14 @@ export function Canvas({ children, ref, ...otherProps }: React.ComponentProps<'d
 							canvasRect
 						)
 					);
-					toggleMode('selection', false);
+					toggleMode('selection', false, false);
 				}
 			}}
 			{...otherProps}
 		>
-			<Overlay />
+			<BoardContextMenu>
+				<Overlay />
+			</BoardContextMenu>
 			<div
 				className="origin-top-left"
 				style={{

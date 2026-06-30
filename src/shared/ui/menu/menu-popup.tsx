@@ -43,7 +43,13 @@ export function MenuPopup(props: MenuPopup.Props) {
 			>
 				<BaseMenu.Popup
 					className={cn(
-						`origin-(--transform-origin) bg-white p-1 shadow-[0_0_0.5rem] shadow-black/90 outline-hidden transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0 data-instant:transition-none data-starting-style:scale-90 data-starting-style:opacity-0`,
+						// prettier-ignore
+						`bg-white shadow-[0_0_0.5rem] shadow-black/90 p-1
+						origin-(--transform-origin) outline-hidden 
+						transition-[transform,scale,opacity] 
+						data-ending-style:scale-90 data-ending-style:opacity-0 
+						data-starting-style:scale-90 data-starting-style:opacity-0
+						data-instant:transition-none`,
 						{ 'w-(--anchor-width)': anchorWidth },
 						{ 'min-w-(--anchor-width)': minAnchorWidth },
 						className

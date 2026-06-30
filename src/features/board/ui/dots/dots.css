@@ -4,5 +4,4 @@
 		transparent var(--dot-size)
 	);
 	background-size: var(--grid-size) var(--grid-size);
-	background-position: var(--window-x) var(--window-y);
 }

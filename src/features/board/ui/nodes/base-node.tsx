@@ -7,6 +7,7 @@ import type { Position } from '../../model/types';
 export function BaseNode(props: BaseNode.Props) {
 	const {
 		children,
+		ref,
 		className,
 		style,
 		id,
@@ -18,8 +19,6 @@ export function BaseNode(props: BaseNode.Props) {
 		...otherProps
 	} = props;
 
-	const isSelected = useAtomValue(boardSelectors.isSelected(id));
-	const isVisualSelected = useAtomValue(boardSelectors.isVisualSelected(id));
 	const isOnlyOneSelected = useAtomValue(boardSelectors.isOnlyOneSelected(id));
 	const isIdleMode = useAtomValue(boardSelectors.isIdleMode);
 	const isSelectionMode = useAtomValue(boardSelectors.isSelectionMode);
@@ -28,10 +27,10 @@ export function BaseNode(props: BaseNode.Props) {
 
 	return (
 		<div
+			ref={ref}
 			data-id={id}
 			className={cn(
-				'absolute overflow-hidden rounded-xs bg-blue-200/30 leading-none',
-				{ 'bg-red-500/50': isSelected || isVisualSelected },
+				'absolute leading-none bg-green-50',
 				{ 'pointer-events-none': !isIdleMode && !isSelectionMode },
 				className
 			)}

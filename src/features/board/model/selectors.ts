@@ -5,6 +5,7 @@ import {
 	historyAtom,
 	historyIndexAtom,
 	modeAtom,
+	nodeIdInEditAtom,
 	nodesAtom,
 	selectedNodeIdsAtom,
 	visualSelectedNodeIdsAtom,
@@ -17,19 +18,24 @@ export const nodeById = atomFamily((id: string) =>
 	atom(get => get(nodesAtom).find(node => node.id === id))
 );
 
-export const isSelected = atomFamily((id: string) => atom(get => get(selectedNodeIdsAtom).has(id)));
+export const isEditMode = atomFamily((nodeId: string) => atom(get => {
+	const nodeIdInEdit = get(nodeIdInEditAtom)
+	return nodeIdInEdit === nodeId
+}))
 
-export const isVisualSelected = atomFamily((id: string) =>
-	atom(get => get(visualSelectedNodeIdsAtom).has(id))
-);
-
-export const isOnlyOneSelected = atomFamily((id: string) =>
+export const isOnlyOneSelected = atomFamily((nodeId: string) =>
 	atom(get => {
 		const selectedNodeIds = get(selectedNodeIdsAtom);
 
-		return selectedNodeIds.size === 1 && selectedNodeIds.has(id);
+		return selectedNodeIds.size === 1 && selectedNodeIds.has(nodeId);
 	})
 );
+
+// export const isSelected = atomFamily((id: string) => atom(get => get(selectedNodeIdsAtom).has(id)));
+
+// export const isVisualSelected = atomFamily((id: string) =>
+// 	atom(get => get(visualSelectedNodeIdsAtom).has(id))
+// );
 
 export const selectedNodes = atom(get => {
 	const nodes = get(domNodesAtom);
@@ -47,6 +53,25 @@ export const selectedNodes = atom(get => {
 
 	return selectedNodes;
 });
+
+export const visualSelectedNodes = atom(get => {
+	const nodes = get(domNodesAtom);
+	const selectedNodeIds = get(visualSelectedNodeIdsAtom);
+
+	const selectedNodes: HTMLElement[] = [];
+
+	selectedNodeIds.forEach(id => {
+		const node = nodes[id];
+
+		if (node) {
+			selectedNodes.push(node);
+		}
+	});
+
+	return selectedNodes;
+});
+
+
 
 export const unselectedNodes = atom(get => {
 	const nodes = get(domNodesAtom);
@@ -86,6 +111,10 @@ export const hasCopiedNodes = atom(get => {
 		return true
 	}
 	return false
+})
+
+export const windowZoom = atom(get => {
+	return get(windowPositionAtom).zoom
 })
 
 // --- History ---

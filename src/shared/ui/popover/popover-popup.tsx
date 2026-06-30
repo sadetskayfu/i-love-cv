@@ -18,6 +18,7 @@ export function PopoverPopup(props: PopoverPopup.Props) {
 		arrow,
 		side,
 		align,
+		sideOffset,
 		anchor,
 		anchorWidth,
 		minAnchorWidth,
@@ -36,7 +37,7 @@ export function PopoverPopup(props: PopoverPopup.Props) {
 					bottom: POPUP_COLLISION_PADDING_BLOCK,
 				}}
 				arrowPadding={POPUP_ARROW_PADDING}
-				sideOffset={arrow ? POPUP_SIDE_OFFSET_WITH_ARROW : POPUP_SIDE_OFFSET}
+				sideOffset={sideOffset ?? (arrow ? POPUP_SIDE_OFFSET_WITH_ARROW : POPUP_SIDE_OFFSET)}
 				side={side}
 				align={align}
 				anchor={anchor}
@@ -60,7 +61,7 @@ export function PopoverPopup(props: PopoverPopup.Props) {
 
 export namespace PopoverPopup {
 	export type Props = BasePopover.Popup.Props &
-		Pick<BasePopover.Positioner.Props, 'side' | 'align' | 'anchor'> & {
+		Pick<BasePopover.Positioner.Props, 'side' | 'align' | 'anchor' | 'sideOffset'> & {
 			backdrop?: boolean;
 			arrow?: boolean;
 			anchorWidth?: boolean;

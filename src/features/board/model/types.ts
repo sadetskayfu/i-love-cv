@@ -1,4 +1,5 @@
 import { FontSchema } from '@/enteties/customization/font';
+import { EditableValueSchema } from '@/shared/ui/editable';
 import z from 'zod';
 
 export type Mode = 'idle' | 'selection' | 'add-shape-node' | 'add-text-node';
@@ -41,6 +42,7 @@ const ShapeNodeSchema = BaseNodeSchema.extend({
 	type: z.literal(NodeType.Shape),
 	position: PositionSchema,
 	dimensions: DimensionsSchema,
+	content: EditableValueSchema
 });
 
 const TextNodeSchema = BaseNodeSchema.extend({
@@ -52,10 +54,10 @@ const TextNodeSchema = BaseNodeSchema.extend({
 });
 
 const NodeSchema = z.discriminatedUnion('type', [ShapeNodeSchema, TextNodeSchema]);
-export const NodesArraySchema = z.array(NodeSchema)
+export const NodesArraySchema = z.array(NodeSchema);
 
 export type Node = z.infer<typeof NodeSchema>;
 export type NodeType = z.infer<typeof NodeTypeSchema>;
 export type ShapeNode = z.infer<typeof ShapeNodeSchema>;
 export type TextNode = z.infer<typeof TextNodeSchema>;
-export type NodesArray = z.infer<typeof NodesArraySchema>
+export type NodesArray = z.infer<typeof NodesArraySchema>;

@@ -36,7 +36,7 @@ export const Button = React.forwardRef(function Button(
 export namespace Button {
 	type Variant = 'filled' | 'ghost' | 'clear';
 	type Color = 'accent' | 'secondary';
-	type Size = '1' | '2' | '3';
+	type Size = '1' | '2' | '3' | '4';
 	type Radius = '1' | '2' | '3' | 'circular' | 'none';
 
 	export type Props = BaseButton.Props & {
@@ -60,6 +60,7 @@ const buttonVariants = tv({
 			'1': '',
 			'2': 'h-8 px-3',
 			'3': 'h-10 px-4',
+			'4': 'h-14 px-5'
 		},
 		radius: {
 			'1': 'rounded-sm',

@@ -1,0 +1,13 @@
+{
+    "Bold": "Полужирный",
+    "Italics": "Курсив",
+    "Underline": "Подчёркнутый",
+    "Strikethrough": "Зачёркнутый",
+    "Align to the left": "Выровнять по левому краю",
+    "Align to the right": "Выровнять по правому краю",
+    "Align to the center": "Выровнять по центру",
+    "Align to the width": "Выровнять по ширине",
+    "Bulleted list": "Маркированный список",
+    "Numbered list": "Нумированный список",
+    "Color": "Цвет"
+}

@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { useRect } from './use-rect';
+import { useStableCallback } from '@/shared/hooks/use-stable-callback';
 import { useAtom, useSetAtom } from 'jotai';
 import { boardActions, boardState } from '../model';
-import { hasMinDragDistance, positionOnScreenToCanvas } from '../helpers';
-import { useStableCallback } from '@/shared/hooks/use-stable-callback';
 import type { ElementRect } from '@/shared/hooks/use-element-rect';
 import type { Position, Rect } from '../model/types';
 
@@ -39,24 +39,6 @@ function getRotatedBoundingBox(rect: Rect, angleDeg: number, center?: Position):
 	};
 }
 
-function createRectFromPositions(startPos: Position, currentPos: Position): Rect {
-	let x = Math.min(startPos.x, currentPos.x);
-	let y = Math.min(startPos.y, currentPos.y);
-	let width = Math.abs(currentPos.x - startPos.x);
-	let height = Math.abs(currentPos.y - startPos.y);
-
-	return {
-		position: {
-			x,
-			y,
-		},
-		size: {
-			width,
-			height,
-		},
-	};
-}
-
 function isRectsIntersecting(rect1: Rect, rect2: Rect) {
 	return (
 		rect1.position.x <= rect2.position.x + rect2.size.width &&
@@ -69,70 +51,28 @@ function isRectsIntersecting(rect1: Rect, rect2: Rect) {
 export function useSelectionRect(canvasRect: ElementRect | null) {
 	const [nodes] = useAtom(boardState.nodesAtom);
 	const [domNodes] = useAtom(boardState.domNodesAtom);
-	const [windowPosition] = useAtom(boardState.windowPositionAtom);
 	const [mode] = useAtom(boardState.modeAtom);
-
-	const [isSelection, setIsSelection] = React.useState<boolean>(false);
-	const [isRealSelection, setIsRealSelection] = useAtom(boardState.isSelectionRectAtom);
-
-	const nodeIdsInRectRef = React.useRef(new Set<string>());
-	const startPositionRef = React.useRef<Position | null>(null);
-
 	const setSelectionRect = useSetAtom(boardState.selectionRectAtom);
-	const setVisualSelectNodes = useSetAtom(boardState.visualSelectedNodeIdsAtom);
+	const setVisualSelectedNodes = useSetAtom(boardState.visualSelectedNodeIdsAtom);
+	const clearVisualSelectedNodes = useSetAtom(boardActions.clearVisualSelectedNodes);
 	const selectNodes = useSetAtom(boardActions.selectNodes);
 
-	const handlePointerDown = React.useCallback(
-		(event: React.PointerEvent) => {
-			if (!canvasRect || event.button !== 0 || mode === 'idle') {
+	const nodeIdsInRectRef = React.useRef(new Set<string>());
+
+	const { onPointerDown, onPointerMove, onPointerUp } = useRect(canvasRect);
+
+	const handlePointeDown = useStableCallback((event: React.PointerEvent) => {
+		if (mode === 'selection') {
+			onPointerDown(event);
+		}
+	});
+
+	const handlePointerMove = useStableCallback((event: PointerEvent) => {
+		onPointerMove(event, (_, rect) => {
+			if (!rect) {
 				return;
 			}
 
-			setSelectionRect(null);
-
-			const selection = window.getSelection();
-
-			if (selection) {
-				selection.removeAllRanges();
-			}
-
-			const startPosition = positionOnScreenToCanvas(
-				{ x: event.clientX, y: event.clientY },
-				windowPosition,
-				canvasRect
-			);
-
-			startPositionRef.current = startPosition;
-			setIsSelection(true);
-		},
-		[canvasRect, windowPosition, mode]
-	);
-
-	const handlePointerMove = useStableCallback((event: PointerEvent) => {
-		const startPos = startPositionRef.current;
-
-		if (!canvasRect || !isSelection || !startPos) {
-			return;
-		}
-
-		const currentPos = positionOnScreenToCanvas(
-			{ x: event.clientX, y: event.clientY },
-			windowPosition,
-			canvasRect
-		);
-
-		if (!isRealSelection) {
-			if (hasMinDragDistance(startPos, currentPos)) {
-				setIsRealSelection(true);
-			}
-			return;
-		}
-
-		const selectionRect = createRectFromPositions(startPos, currentPos);
-
-		setSelectionRect(selectionRect);
-
-		if (mode === 'selection') {
 			const nodeIdsInRect = new Set<string>();
 
 			nodes.forEach(node => {
@@ -154,47 +94,39 @@ export function useSelectionRect(canvasRect: ElementRect | null) {
 					nodeRect = getRotatedBoundingBox(nodeRect, node.rotate);
 				}
 
-				if (isRectsIntersecting(nodeRect, selectionRect)) {
+				if (isRectsIntersecting(nodeRect, rect)) {
 					nodeIdsInRect.add(node.id);
 				}
 			});
 
-			setVisualSelectNodes(nodeIdsInRect);
+			setSelectionRect(rect);
+			setVisualSelectedNodes(nodeIdsInRect);
 			nodeIdsInRectRef.current = nodeIdsInRect;
-		}
+		});
 	});
 
 	const handlePointerUp = useStableCallback((event: PointerEvent) => {
-		if (event.button !== 0) {
-			return;
-		}
-
-		if (mode === 'selection' && isRealSelection) {
-			setVisualSelectNodes(new Set());
+		onPointerUp(event, () => {
+			setSelectionRect(null)
+			clearVisualSelectedNodes();
 			selectNodes(
 				Array.from(nodeIdsInRectRef.current),
 				event.ctrlKey || event.shiftKey ? 'add' : 'replace'
 			);
 
 			nodeIdsInRectRef.current.clear();
-		}
-
-		startPositionRef.current = null;
-		setIsRealSelection(false);
-		setIsSelection(false);
+		});
 	});
 
 	React.useEffect(() => {
-		if (isSelection) {
-			document.addEventListener('pointermove', handlePointerMove);
-			document.addEventListener('pointerup', handlePointerUp);
+		document.addEventListener('pointermove', handlePointerMove);
+		document.addEventListener('pointerup', handlePointerUp);
 
-			return () => {
-				document.removeEventListener('pointermove', handlePointerMove);
-				document.removeEventListener('pointerup', handlePointerUp);
-			};
-		}
-	}, [handlePointerMove, handlePointerUp, isSelection]);
+		return () => {
+			document.removeEventListener('pointermove', handlePointerMove);
+			document.removeEventListener('pointerup', handlePointerUp);
+		};
+	}, [handlePointerMove, handlePointerUp]);
 
-	return { onPointerDown: handlePointerDown };
+	return { onSelectionRectPointerDown: handlePointeDown };
 }

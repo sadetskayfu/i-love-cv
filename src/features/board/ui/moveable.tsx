@@ -53,23 +53,33 @@ export function Moveable() {
 	const [nodes] = useAtom(boardState.nodesAtom);
 	const [selectedNodes] = useAtom(boardSelectors.selectedNodes);
 	const [unselectedNodes] = useAtom(boardSelectors.unselectedNodes);
+	const [selectedNodeIds] = useAtom(boardState.selectedNodeIdsAtom)
+	const [nodeIdInEdit, setNodeIdInEdit] = useAtom(boardState.nodeIdInEditAtom)
 	const [windowPosition] = useAtom(boardState.windowPositionAtom);
+	const [snapToGrid] = useAtom(boardState.snapToGrid)
+	const [snapToObject] = useAtom(boardState.snapToObject)
+	const setSelectedNodeIds = useSetAtom(boardState.selectedNodeIdsAtom)
 	const updateNodes = useSetAtom(boardActions.updateNodes);
 	const setIsNodeDragging = useSetAtom(boardState.isNodesDraggingAtom);
+
+	const disabledDraggable = Boolean(selectedNodeIds.size === 1 && nodeIdInEdit && selectedNodeIds.has(nodeIdInEdit))
 
 	return (
 		<MoveableComponent
 			target={selectedNodes}
-			draggable={true}
+			elementGuidelines={snapToObject ? unselectedNodes : undefined}
+			snappable={snapToObject? true : false}
+			draggable={!disabledDraggable}
 			resizable={true}
 			keepRatio={false}
-			renderDirections={['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se']}
-			throttleDrag={0}
-			throttleResize={0}
-			zoom={1 / windowPosition.zoom}
-			snappable={true}
-			snapGap={true}
 			rotatable={true}
+			renderDirections={['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se']}
+			throttleDrag={snapToGrid ? (windowPosition.zoom <= 0.6 ? 10 : 5) : 0}
+			throttleResize={snapToGrid ? (windowPosition.zoom <= 0.6 ? 10 : 5) : 0}
+			zoom={1 / windowPosition.zoom}
+			
+			
+			
 			snapRotationDegrees={[0, 90, 180, 270]}
 			snapDirections={{
 				top: true,
@@ -87,7 +97,7 @@ export function Moveable() {
 				center: true,
 				middle: true,
 			}}
-			elementGuidelines={unselectedNodes}
+			
 			onRenderStart={() => {
 				setIsNodeDragging(true);
 			}}
@@ -101,6 +111,7 @@ export function Moveable() {
 				setIsNodeDragging(false);
 			}}
 			onDrag={event => {
+				console.log(event);
 				event.target.style.transform = event.style.transform;
 			}}
 			onDragEnd={event => {
@@ -108,6 +119,11 @@ export function Moveable() {
 
 				if (!nodeId) {
 					return;
+				}
+
+				if (!event.isDrag) {
+					setNodeIdInEdit(nodeId)
+					return
 				}
 
 				const node = nodes.find(n => n.id === nodeId);
@@ -287,6 +303,12 @@ export function Moveable() {
 				let needUpdate: boolean = false;
 
 				events.forEach(event => {
+					if (!event.isDrag) {
+						const nodeId = event.inputEvent.target.dataset['id']
+						setSelectedNodeIds(new Set(nodeId ? [nodeId] : []))
+						console.log('drag end')
+					}
+
 					const nodeId = event.target.dataset.id;
 					const style = event.lastEvent?.style;
 

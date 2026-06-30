@@ -1,12 +1,15 @@
 import { atom } from 'jotai';
 import {
 	copiedNodesAtom,
+	creatingRectAtom,
 	historyAtom,
 	historyIndexAtom,
 	modeAtom,
+	nodeIdInEditAtom,
 	nodesAtom,
 	selectedNodeIdsAtom,
 	selectionRectAtom,
+	visualSelectedNodeIdsAtom,
 	windowPositionAtom,
 } from './state';
 import { hasRedo, hasUndo } from './selectors';
@@ -45,42 +48,57 @@ export const updateNodes = atom(
 );
 
 export const deleteNodes = atom(null, (get, set) => {
-	const nodes = get(nodesAtom)
-	const selectedNodeIds = get(selectedNodeIdsAtom)
-	
-	const newNodes = nodes.filter((node) => !selectedNodeIds.has(node.id))
+	const nodes = get(nodesAtom);
+	const selectedNodeIds = get(selectedNodeIdsAtom);
 
-	set(updateNodes, newNodes)
-	set(clearSelectedNodes)
-})
+	if (selectedNodeIds.size === 0) {
+		return;
+	}
+
+	const newNodes = nodes.filter(node => !selectedNodeIds.has(node.id));
+
+	set(updateNodes, newNodes);
+	set(clearSelectedNodes);
+});
 
 export const copyNodes = atom(null, (get, set) => {
-	const nodes = get(nodesAtom)
-	const selectedNodeIds = get(selectedNodeIdsAtom)
-	const copiedNodes = nodes.filter((node) => selectedNodeIds.has(node.id))
+	const nodes = get(nodesAtom);
+	const selectedNodeIds = get(selectedNodeIdsAtom);
 
-	set(copiedNodesAtom, copiedNodes)
-})
+	if (selectedNodeIds.size === 0) {
+		return;
+	}
+
+	const copiedNodes = nodes.filter(node => selectedNodeIds.has(node.id));
+
+	set(copiedNodesAtom, copiedNodes);
+});
 
 export const pasteNodes = atom(null, (get, set) => {
-	const nodes = get(nodesAtom)
-	const copiedNodes = get(copiedNodesAtom)
-	const selectedIds = new Set<string>()
-	const nodesToPaste = copiedNodes.map((node) => {
-		const id = v4()
-		selectedIds.add(id)
-		return {...node, id}
-	})
-	
-	set(updateNodes, [...nodes, ...nodesToPaste])
-	set(selectedNodeIdsAtom, selectedIds)
-})
+	const nodes = get(nodesAtom);
+	const copiedNodes = get(copiedNodesAtom);
+
+	if (copiedNodes.length === 0) {
+		return;
+	}
+
+	const selectedIds = new Set<string>();
+	const nodesToPaste = copiedNodes.map(node => {
+		const id = v4();
+		selectedIds.add(id);
+		return { ...node, id };
+	});
+
+	set(updateNodes, [...nodes, ...nodesToPaste]);
+	set(selectedNodeIdsAtom, selectedIds);
+});
 
 export const addTextNode = atom(null, (get, set, cursorPosition: Position) => {
-	const creationRect = get(selectionRectAtom);
+	const creationRect = get(creatingRectAtom);
 
+	const id = v4();
 	const newNode: TextNode = {
-		id: v4(),
+		id,
 		type: 'text',
 		position: {
 			x: creationRect ? creationRect.position.x : cursorPosition.x,
@@ -97,13 +115,17 @@ export const addTextNode = atom(null, (get, set, cursorPosition: Position) => {
 	};
 
 	set(updateNodes, prev => [...prev, newNode]);
+	set(selectedNodeIdsAtom, new Set([id]));
+	set(nodeIdInEditAtom, id);
+	set(creatingRectAtom, null);
 });
 
 export const addShapeNode = atom(null, (get, set, cursorPosition: Position) => {
-	const creationRect = get(selectionRectAtom);
+	const creationRect = get(creatingRectAtom);
 
+	const id = v4();
 	const newNode: ShapeNode = {
-		id: v4(),
+		id,
 		type: 'shape',
 		position: {
 			x: creationRect ? creationRect.position.x : cursorPosition.x,
@@ -118,27 +140,52 @@ export const addShapeNode = atom(null, (get, set, cursorPosition: Position) => {
 				: MIN_SHAPE_NODE_SIZE,
 		},
 		rotate: 0,
+		content: [{ type: 'paragraph', children: [{ text: '', fontColor: 1, backgroundColor: 1 }] }],
 	};
 
 	set(updateNodes, prev => [...prev, newNode]);
+	set(selectedNodeIdsAtom, new Set([id]));
+	set(nodeIdInEditAtom, id);
+	set(creatingRectAtom, null);
 });
 
-export const toggleMode = atom(null, (get, set, mode: Mode, toggled: boolean = true) => {
-	const currentMode = get(modeAtom);
+export const toggleMode = atom(
+	null,
+	(get, set, mode: Mode, toggled: boolean = true, clearSelection: boolean = true) => {
+		const currentMode = get(modeAtom);
 
-	if (toggled && currentMode === mode) {
-		set(modeAtom, 'idle');
-		set(clearSelectedNodes);
-		console.log('go to idle');
-	} else {
-		set(modeAtom, mode);
-		set(clearSelectedNodes);
-		console.log(`go to ${mode}`);
+		if (toggled && currentMode === mode) {
+			set(modeAtom, 'idle');
+
+			if (clearSelection) {
+				set(clearSelectedNodes);
+			}
+		} else {
+			set(modeAtom, mode);
+
+			if (clearSelection) {
+				set(clearSelectedNodes);
+			}
+		}
+	}
+);
+
+export const clearSelectedNodes = atom(null, (get, set) => {
+	const selectedNodeIds = get(selectedNodeIdsAtom);
+
+	if (selectedNodeIds.size > 0) {
+		console.log('clear selected nodes');
+		set(selectedNodeIdsAtom, new Set());
+		set(nodeIdInEditAtom, null);
 	}
 });
 
-export const clearSelectedNodes = atom(null, (_, set) => {
-	set(selectedNodeIdsAtom, new Set());
+export const clearVisualSelectedNodes = atom(null, (get, set) => {
+	const selectedNodeIds = get(visualSelectedNodeIdsAtom);
+
+	if (selectedNodeIds.size > 0) {
+		set(visualSelectedNodeIdsAtom, new Set());
+	}
 });
 
 export const selectNodes = atom(
@@ -146,12 +193,19 @@ export const selectNodes = atom(
 	(get, set, nodeIds: string[], mod: 'replace' | 'add' | 'toggle') => {
 		const mode = get(modeAtom);
 
+		console.trace();
+
 		if (mode !== 'selection') {
 			return;
 		}
 
 		if (mod === 'replace') {
+			const selectedIds = get(selectedNodeIdsAtom);
 			const newSelectedIds = new Set(nodeIds);
+
+			if (nodeIds.length === 1 && selectedIds.size === 1 && selectedIds.has(nodeIds[0])) {
+				return;
+			}
 
 			set(selectedNodeIdsAtom, newSelectedIds);
 

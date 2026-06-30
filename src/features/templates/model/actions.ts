@@ -14,7 +14,6 @@ const onChangeTemplate = atom(null, (_, set, templateId: string) => {
 	set(boardState.historyAtom, nodes ? [nodes] : [[]]);
 	set(boardState.historyIndexAtom, 0)
 	set(boardState.nodesAtom, nodes ?? [])
-	set(boardState.copiedNodesAtom, [])
 	set(activeTemplateIdAtom, templateId);
 
 	updateStoredActiveTemplateId(templateId);
