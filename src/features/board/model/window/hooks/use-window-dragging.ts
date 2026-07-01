@@ -43,7 +43,7 @@ export function useWindowDragging(canvasRect: ElementRect | null) {
 	});
 
 	const handlePointerMove = useStableCallback((event: PointerEvent) => {
-		const startCursorPos = startCursorPositionRef.current;
+		let startCursorPos = startCursorPositionRef.current;
 		const startWindowPos = startWindowPositionRef.current;
 
 		if (!canvasRect || !isDragging || !startCursorPos || !startWindowPos) {
@@ -57,6 +57,7 @@ export function useWindowDragging(canvasRect: ElementRect | null) {
 
 			if (hasMinDragDistance(startCursorPos, currentCursorPos)) {
 				startCursorPositionRef.current = { ...currentCursorPos };
+				startCursorPos = {...currentCursorPos}
 				setIsRealDragging(true);
 				setHasWindowDragging(true);
 				needContinue = true;
