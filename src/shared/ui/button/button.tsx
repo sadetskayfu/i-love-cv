@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { tv, cn } from 'tailwind-variants';
 import { Button as BaseButton } from '@base-ui/react';
+import { cn, tv } from 'tailwind-variants';
 import { ButtonContext, useButtonContext } from './provider/button-context';
 
 export const Button = React.forwardRef(function Button(
@@ -24,7 +24,7 @@ export const Button = React.forwardRef(function Button(
 	return (
 		<BaseButton
 			ref={forwardedRef}
-			className={cn(buttonVariants({ ...(finalVariants) }), context?.className, className)}
+			className={cn(buttonVariants({ ...finalVariants }), context?.className, className)}
 			disabled={finalVariants.disabled}
 			{...otherProps}
 		>
@@ -60,7 +60,7 @@ const buttonVariants = tv({
 			'1': '',
 			'2': 'h-8 px-3',
 			'3': 'h-10 px-4',
-			'4': 'h-14 px-5'
+			'4': 'h-14 px-5',
 		},
 		radius: {
 			'1': 'rounded-sm',

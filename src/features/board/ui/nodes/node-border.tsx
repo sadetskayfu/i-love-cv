@@ -1,13 +1,14 @@
 import { useAtom } from 'jotai';
-import { boardSelectors, boardState } from '../../model';
+import { nodeSelectionStore } from '../../model/node-selection';
+import { windowStore } from '../../model/window';
 
 export function NodeBorder() {
-	const [selectedNodes] = useAtom(boardSelectors.visualSelectedNodes);
-    const [windowPosition] = useAtom(boardState.windowPositionAtom)
+	const [candidateNodes] = useAtom(nodeSelectionStore.candidateDomNodes);
+	const [zoom] = useAtom(windowStore.zoomAtom);
 
 	return (
 		<div aria-hidden>
-			{selectedNodes.map(node => (
+			{candidateNodes.map(node => (
 				<div
 					key={node.dataset['id']}
 					className="absolute pointer-events-none outline outline-green-600"
@@ -16,8 +17,8 @@ export function NodeBorder() {
 						height: node.style.height,
 						left: 0,
 						top: 0,
-                        transform: node.style.transform,
-                        outlineWidth: `${1 / windowPosition.zoom}px`,
+						transform: node.style.transform,
+						outlineWidth: `${1 / zoom}px`,
 					}}
 				/>
 			))}

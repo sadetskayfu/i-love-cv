@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { useSlate } from 'slate-react';
-import { Icon } from '@/shared/ui/icons';
-import { isActive } from '../helpers/is-active';
+import { mergeProps, useRender } from '@base-ui/react';
 import { Editor } from 'slate';
-import { mergeProps, useRender, type ComponentRenderFn, type HTMLProps } from '@base-ui/react';
-import { EDITABLE_HOTKEYS } from '../editable-hotkeys';
-import { EDITABLE_BUTTON_LABELS } from '../editable-button-labels';
+import { useSlate } from 'slate-react';
 import { useTranslation } from '@/shared/translation';
+import { Icon } from '@/shared/ui/icons';
+import { EDITABLE_BUTTON_LABELS } from '../editable-button-labels';
+import { EDITABLE_HOTKEYS } from '../editable-hotkeys';
+import { isActive } from '../helpers/is-active';
 import type { TextMarkType } from '../editable-types';
+import type { ComponentRenderFn, HTMLProps } from '@base-ui/react';
 
 export function EditableMarkButton({
 	ref,

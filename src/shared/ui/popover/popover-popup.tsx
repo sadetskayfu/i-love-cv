@@ -1,6 +1,6 @@
-import { cn } from 'tailwind-variants';
 import { Popover as BasePopover } from '@base-ui/react/popover';
-import { PopupArrow } from '@/shared/ui/popup-arrow';
+import { cn } from 'tailwind-variants';
+import { Backdrop } from '@/shared/ui/backdrop';
 import {
 	POPUP_ARROW_PADDING,
 	POPUP_COLLISION_PADDING_BLOCK,
@@ -8,7 +8,7 @@ import {
 	POPUP_SIDE_OFFSET,
 	POPUP_SIDE_OFFSET_WITH_ARROW,
 } from '@/shared/ui/constants';
-import { Backdrop } from '@/shared/ui/backdrop';
+import { PopupArrow } from '@/shared/ui/popup-arrow';
 
 export function PopoverPopup(props: PopoverPopup.Props) {
 	const {

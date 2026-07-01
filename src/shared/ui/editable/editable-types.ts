@@ -1,6 +1,6 @@
+import { z } from 'zod';
 import type { BaseEditor, Descendant } from 'slate';
 import type { ReactEditor } from 'slate-react';
-import { z } from 'zod';
 
 export const TEXT_MARK = ['bold', 'italics', 'underline', 'strikethrough'] as const;
 export const TEXT_ALIGN = ['left', 'center', 'right', 'justify'] as const;
@@ -84,11 +84,8 @@ export const ElementSchema: z.ZodType<Element> = z.union([
 	}),
 ]);
 
-const DescendantSchema: z.ZodType<Descendant> = z.union([
-	TextSchema,
-	z.lazy(() => ElementSchema),
-]);
-export const EditableValueSchema = z.array(DescendantSchema)
+const DescendantSchema: z.ZodType<Descendant> = z.union([TextSchema, z.lazy(() => ElementSchema)]);
+export const EditableValueSchema = z.array(DescendantSchema);
 
 export type ElementType = Element['type'];
 export type CustomEditor = BaseEditor & ReactEditor;

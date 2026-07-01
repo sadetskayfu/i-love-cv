@@ -1,10 +1,10 @@
-import { ColorsSchema } from '@/enteties/customization/color';
 import z from 'zod';
+import { ColorsSchema } from '@/enteties/customization/color';
 
 export const TemplateSchema = z.object({
 	id: z.string(),
 	name: z.string(),
-    colors: ColorsSchema,
+	colors: ColorsSchema,
 });
 export const TemplatesArraySchema = z.array(TemplateSchema);
 

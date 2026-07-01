@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { TranslationContext, translations, type Language } from './translation-context';
+import { TranslationContext, translations } from './translation-context';
+import type { Language } from './translation-context';
 
 export function TranslationProvider({
 	children,

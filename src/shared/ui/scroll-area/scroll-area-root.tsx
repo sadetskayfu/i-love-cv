@@ -1,5 +1,5 @@
-import { cn } from 'tailwind-variants';
 import { ScrollArea as BaseScrollArea } from '@base-ui/react/scroll-area';
+import { cn } from 'tailwind-variants';
 
 export function ScrollAreaRoot({ className, ...otherProps }: BaseScrollArea.Root.Props) {
 	return (

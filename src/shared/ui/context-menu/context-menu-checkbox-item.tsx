@@ -6,7 +6,9 @@ export const ContextMenuCheckboxItem = React.forwardRef(function MenuCheckboxIte
 	props: ContextMenuCheckboxItem.Props,
 	forwardedRef: React.ForwardedRef<HTMLDivElement>
 ) {
-	return <BaseContextMenu.CheckboxItem ref={forwardedRef} render={<CheckboxListItem />} {...props} />;
+	return (
+		<BaseContextMenu.CheckboxItem ref={forwardedRef} render={<CheckboxListItem />} {...props} />
+	);
 });
 
 export namespace ContextMenuCheckboxItem {

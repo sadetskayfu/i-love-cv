@@ -1,9 +1,10 @@
+import type { Position } from '../model/types';
 import type { ElementRect } from '@/shared/hooks/use-element-rect';
-import type { Position, WindowPosition } from '../model/types';
 
 export function positionOnScreenToCanvas(
 	position: Position,
-	windowPosition: WindowPosition,
+	windowPosition: Position,
+	zoom: number,
 	canvasRect?: ElementRect
 ): Position {
 	if (!canvasRect) {
@@ -11,7 +12,7 @@ export function positionOnScreenToCanvas(
 	}
 
 	return {
-		x: (position.x - canvasRect.x) / windowPosition.zoom + windowPosition.x,
-		y: (position.y - canvasRect.y) / windowPosition.zoom + windowPosition.y,
+		x: (position.x - canvasRect.x) / zoom + windowPosition.x,
+		y: (position.y - canvasRect.y) / zoom + windowPosition.y,
 	};
 }

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { cn } from 'tailwind-variants';
-import { boardActions, boardSelectors } from '../../model';
+import { boardStore } from '../../model/board';
+import { nodeSelectionStore } from '../../model/node-selection';
 import type { Position } from '../../model/types';
 
 export function BaseNode(props: BaseNode.Props) {
@@ -19,11 +20,10 @@ export function BaseNode(props: BaseNode.Props) {
 		...otherProps
 	} = props;
 
-	const isOnlyOneSelected = useAtomValue(boardSelectors.isOnlyOneSelected(id));
-	const isIdleMode = useAtomValue(boardSelectors.isIdleMode);
-	const isSelectionMode = useAtomValue(boardSelectors.isSelectionMode);
+	const isOnlyOneSelected = useAtomValue(nodeSelectionStore.isOnlyOneSelected(id));
+	const isSelectionMode = useAtomValue(boardStore.isSelectionMode);
 
-	const selectNodes = useSetAtom(boardActions.selectNodes);
+	const selectNodes = useSetAtom(nodeSelectionStore.selectNodes);
 
 	return (
 		<div
@@ -31,7 +31,7 @@ export function BaseNode(props: BaseNode.Props) {
 			data-id={id}
 			className={cn(
 				'absolute leading-none bg-green-50',
-				{ 'pointer-events-none': !isIdleMode && !isSelectionMode },
+				{ 'pointer-events-none': !isSelectionMode },
 				className
 			)}
 			style={{
@@ -40,8 +40,8 @@ export function BaseNode(props: BaseNode.Props) {
 				...style,
 			}}
 			onPointerDown={event => {
-				if (event.button === 0 && !isIdleMode) {
-					if (!event.ctrlKey && !event.shiftKey) {
+				if (event.button === 0 && isSelectionMode) {
+					if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
 						selectNodes([id], 'replace');
 					}
 				}
@@ -49,8 +49,8 @@ export function BaseNode(props: BaseNode.Props) {
 				onPointerDown?.(event);
 			}}
 			onPointerUp={event => {
-				if (event.button === 0 && !isIdleMode) {
-					if (event.ctrlKey || event.shiftKey) {
+				if (event.button === 0 && isSelectionMode) {
+					if (event.ctrlKey || event.metaKey || event.shiftKey) {
 						selectNodes([id], 'toggle');
 					}
 				}

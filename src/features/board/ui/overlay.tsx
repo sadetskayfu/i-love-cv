@@ -1,32 +1,29 @@
 import * as React from 'react';
 import { useSetAtom } from 'jotai';
-import { boardActions } from '../model';
+import { useCreationRect } from '../model/node-manager';
+import { nodeSelectionStore, useSelectionRect } from '../model/node-selection';
 import { useBoardContext } from './board-context';
-import { useSelectionRect } from '../hooks/use-selection-rect';
-import { useCreatingRect } from '../hooks/use-creating-rect';
 
-export function Overlay (
-	{ ref, onPointerDown,...otherProps }: React.ComponentProps<'div'>
-) {
-	const clearSelectedNodes = useSetAtom(boardActions.clearSelectedNodes);
+export function Overlay({ ref, onPointerDown, ...otherProps }: React.ComponentProps<'div'>) {
+	const clearSelectedNodes = useSetAtom(nodeSelectionStore.clearSelectedNodes);
 
-	const { canvasRect} = useBoardContext();
+	const { canvasRect } = useBoardContext();
 
-	const { onSelectionRectPointerDown } = useSelectionRect(canvasRect);
-	const { onCreatingRectPointerDown } = useCreatingRect(canvasRect)
+	const { handleSelectionRectPointerDown } = useSelectionRect(canvasRect);
+	const { handleCreationRectPointerDown } = useCreationRect(canvasRect);
 
 	return (
 		<div
 			ref={ref}
 			className="absolute inset-0"
 			onPointerDown={event => {
-				if (event.button === 0 && !event.ctrlKey && !event.shiftKey) {
+				if (event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
 					clearSelectedNodes();
 				}
 
-				onSelectionRectPointerDown(event);
-				onCreatingRectPointerDown(event)
-				onPointerDown?.(event)
+				handleCreationRectPointerDown(event);
+				handleSelectionRectPointerDown(event);
+				onPointerDown?.(event);
 			}}
 			{...otherProps}
 		/>

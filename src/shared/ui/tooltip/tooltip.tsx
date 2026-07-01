@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { cn } from 'tailwind-variants';
 import { Tooltip as BaseTooltip } from '@base-ui/react';
-import { PopupArrow } from '@/shared/ui/popup-arrow';
+import { cn } from 'tailwind-variants';
 import {
 	POPUP_ARROW_PADDING,
 	POPUP_COLLISION_PADDING_BLOCK,
@@ -9,6 +8,7 @@ import {
 	POPUP_SIDE_OFFSET,
 	POPUP_SIDE_OFFSET_WITH_ARROW,
 } from '@/shared/ui/constants';
+import { PopupArrow } from '@/shared/ui/popup-arrow';
 
 export function Tooltip(props: Tooltip.Props) {
 	const {

@@ -1,0 +1,1 @@
+export { getZoomLabel } from './get-zoom-label'

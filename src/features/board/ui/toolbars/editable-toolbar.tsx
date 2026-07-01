@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useTranslation } from '@/shared/translation';
-import { Editable } from '@/shared/ui/editable';
-import { Tooltip, TooltipGroup } from '@/shared/ui/tooltip';
-import { Key } from '@/shared/ui/key';
 import { Button, ButtonProvider } from '@/shared/ui/button';
 import { ColorButton } from '@/shared/ui/color-button';
+import { Editable } from '@/shared/ui/editable';
+import { Key } from '@/shared/ui/key';
+import { Tooltip, TooltipGroup } from '@/shared/ui/tooltip';
 
 export function EditableToolbar() {
 	const { fontColors, backgroundColors } = Editable.useContext();
@@ -12,7 +12,7 @@ export function EditableToolbar() {
 
 	return (
 		<div className="flex rounded-md bg-white p-1">
-			<ButtonProvider radius='1' size='4'>
+			<ButtonProvider radius="1" size="4">
 				<div className="flex">
 					<TooltipGroup>
 						{Editable.TEXT_MARK.map(format => (

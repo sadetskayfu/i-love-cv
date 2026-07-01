@@ -1,14 +1,14 @@
-import { ButtonProvider } from '@/shared/ui/button';
-import { ToggleButton } from '@/shared/ui/toggle-button';
-import { Icon } from '@/shared/ui/icons';
-import { Tooltip, TooltipGroup } from '@/shared/ui/tooltip';
-import { Key } from '@/shared/ui/key';
 import { useAtom, useSetAtom } from 'jotai';
-import { boardActions, boardState } from '../../model';
+import { ButtonProvider } from '@/shared/ui/button';
+import { Icon } from '@/shared/ui/icons';
+import { Key } from '@/shared/ui/key';
+import { ToggleButton } from '@/shared/ui/toggle-button';
+import { Tooltip, TooltipGroup } from '@/shared/ui/tooltip';
+import { boardStore } from '../../model/board';
 
 export function MainToolbar() {
-	const [mode] = useAtom(boardState.modeAtom);
-	const toggleMode = useSetAtom(boardActions.toggleMode);
+	const [mode] = useAtom(boardStore.modeAtom);
+	const toggleMode = useSetAtom(boardStore.toggleMode);
 
 	return (
 		<div className="my-shadow-paper flex flex-col gap-y-1 rounded-md bg-white p-1">

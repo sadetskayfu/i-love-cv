@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { cn } from 'tailwind-variants';
-import { ListItem } from './list-item';
 import { Icon } from '../icons';
+import { ListItem } from './list-item';
 
 export const CheckboxListItem = React.forwardRef(function CheckboxListItem(
 	props: CheckboxListItem.Props,

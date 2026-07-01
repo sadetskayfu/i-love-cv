@@ -1,7 +1,9 @@
 import z from 'zod';
-import { LOCAL_STORAGE_KEY, loadFromLocalStorage } from '@/shared/local-storage';
-import { TemplatesArraySchema, type TemplatesArray } from './types';
-import { NodesArraySchema, type NodesArray } from '@/features/board';
+import { NodesArraySchema } from '@/features/board';
+import { loadFromLocalStorage, LOCAL_STORAGE_KEY } from '@/shared/local-storage';
+import { TemplatesArraySchema } from './types';
+import type { TemplatesArray } from './types';
+import type { NodesArray } from '@/features/board';
 
 const TEMPLATES_LOCAL_STORAGE_KEY = `${LOCAL_STORAGE_KEY}_templates`;
 const ACTIVE_TEMPLATE_LOCAL_STORAGE_KEY = `${LOCAL_STORAGE_KEY}_active-template`;
@@ -17,10 +19,10 @@ export function loadStoredNodes(templateId: string) {
 	});
 }
 export function updateStoredNodes(templateId: string, nodes: NodesArray) {
-	localStorage.setItem(generateNodesLocalStorageKey(templateId), JSON.stringify(nodes))
+	localStorage.setItem(generateNodesLocalStorageKey(templateId), JSON.stringify(nodes));
 }
 export function deleteStoredNodes(templateId: string) {
-	localStorage.removeItem(generateNodesLocalStorageKey(templateId))
+	localStorage.removeItem(generateNodesLocalStorageKey(templateId));
 }
 
 export function updateStoredTemplates(templates: TemplatesArray) {

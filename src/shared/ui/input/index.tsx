@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { cn, tv } from 'tailwind-variants';
 import { Input as BaseInput } from '@base-ui/react/input';
+import { cn, tv } from 'tailwind-variants';
 
 export const Input = React.forwardRef(function Input(
 	{ className, size = '3', ...otherProps }: Input.Props,

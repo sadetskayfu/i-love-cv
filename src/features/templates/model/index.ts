@@ -1,4 +1,3 @@
-export * as templateSelectors from './selectors';
-export * as templateActions from './actions';
-export * as templateState from './state';
-export { useInitTemplates } from './use-init-templates'
+export { useInitTemplates } from './use-init-templates';
+export { updateStoredNodes } from './local-storage'
+export { templateStore } from './store'

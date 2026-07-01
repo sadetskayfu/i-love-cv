@@ -1,5 +1,5 @@
-import { cn } from 'tailwind-variants';
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
+import { cn } from 'tailwind-variants';
 import { Backdrop } from '@/shared/ui/backdrop';
 
 export function DialogPopup(props: DialogPopup.Props) {

@@ -1,5 +1,7 @@
 import { useSetAtom } from 'jotai';
+import { historyStore, nodeManagerStore } from '@/features/board';
 import { useIsoLayoutEffect } from '@/shared/hooks/use-iso-layout-effect';
+import { DEFAULT_TEMPLATE } from './default-template';
 import {
 	loadStoredActiveTemplateId,
 	loadStoredNodes,
@@ -7,15 +9,13 @@ import {
 	updateStoredActiveTemplateId,
 	updateStoredTemplates,
 } from './local-storage';
-import { activeTemplateIdAtom, templatesAtom } from './state';
-import { DEFAULT_TEMPLATE } from './default-template';
-import { boardState } from '@/features/board';
+import { templateStore } from './store';
 
 export function useInitTemplates() {
-	const setTemplates = useSetAtom(templatesAtom);
-	const setActiveTemplateId = useSetAtom(activeTemplateIdAtom);
-	const setNodes = useSetAtom(boardState.nodesAtom);
-	const setHistory = useSetAtom(boardState.historyAtom);
+	const setTemplates = useSetAtom(templateStore.templatesAtom);
+	const setActiveTemplateId = useSetAtom(templateStore.activeTemplateIdAtom);
+	const setNodes = useSetAtom(nodeManagerStore.nodesAtom);
+	const setHistory = useSetAtom(historyStore.historyAtom);
 
 	useIsoLayoutEffect(() => {
 		const storedTemplates = loadStoredTemplates();

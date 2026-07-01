@@ -1,13 +1,9 @@
+import z from 'zod';
 import { FontSchema } from '@/enteties/customization/font';
 import { EditableValueSchema } from '@/shared/ui/editable';
-import z from 'zod';
 
 export type Mode = 'idle' | 'selection' | 'add-shape-node' | 'add-text-node';
-export type WindowPosition = {
-	x: number;
-	y: number;
-	zoom: number;
-};
+
 export type Position = {
 	x: number;
 	y: number;
@@ -36,13 +32,21 @@ const BaseNodeSchema = z.object({
 	id: z.string(),
 	type: NodeTypeSchema,
 	rotate: z.number(),
+	border: z.object({
+		color: z.number(),
+		width: z.number(),
+		opacity: z.number(),
+		radius: z.number(),
+	}),
+	backgroundColor: z.number(),
+	opacity: z.number(),
 });
 
 const ShapeNodeSchema = BaseNodeSchema.extend({
 	type: z.literal(NodeType.Shape),
 	position: PositionSchema,
 	dimensions: DimensionsSchema,
-	content: EditableValueSchema
+	content: EditableValueSchema,
 });
 
 const TextNodeSchema = BaseNodeSchema.extend({

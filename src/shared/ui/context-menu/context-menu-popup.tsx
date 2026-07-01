@@ -1,5 +1,5 @@
-import { cn } from 'tailwind-variants';
 import { ContextMenu as BaseContextMenu } from '@base-ui/react/context-menu';
+import { cn } from 'tailwind-variants';
 
 export function ContextMenuPopup(props: ContextMenuPopup.Props) {
 	const { children, className, portalTarget, anchor, ...otherProps } = props;
@@ -28,7 +28,8 @@ export function ContextMenuPopup(props: ContextMenuPopup.Props) {
 }
 
 export namespace ContextMenuPopup {
-	export type Props = BaseContextMenu.Popup.Props & Pick<BaseContextMenu.Positioner.Props, 'anchor'> & {
-		portalTarget?: BaseContextMenu.Portal.Props['container'];
-	};
+	export type Props = BaseContextMenu.Popup.Props &
+		Pick<BaseContextMenu.Positioner.Props, 'anchor'> & {
+			portalTarget?: BaseContextMenu.Portal.Props['container'];
+		};
 }

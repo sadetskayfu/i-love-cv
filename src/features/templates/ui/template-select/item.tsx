@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useSetAtom } from 'jotai';
-import { templateActions } from '../../model';
 import { cn } from 'tailwind-variants';
-import { Menu } from '@/shared/ui/menu';
 import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icons';
+import { Menu } from '@/shared/ui/menu';
+import { templateStore } from '../../model';
 import { RenameDialog } from './rename-dialog';
 
 export const Item = React.memo(function TemplateItem(
@@ -12,7 +12,7 @@ export const Item = React.memo(function TemplateItem(
 		name: string;
 		id: string;
 		active: boolean;
-		disabledDelete: boolean
+		disabledDelete: boolean;
 		onSelect: () => void;
 	} & React.ComponentProps<'div'>
 ) {
@@ -20,9 +20,9 @@ export const Item = React.memo(function TemplateItem(
 
 	const [openRenameDialog, setOpenRenameDialog] = React.useState<boolean>(false);
 
-	const selectTemplate = useSetAtom(templateActions.selectTemplate);
-	const deleteTemplate = useSetAtom(templateActions.deleteTemplateAtom);
-	const renameTemplate = useSetAtom(templateActions.renameTemplate);
+	const selectTemplate = useSetAtom(templateStore.selectTemplate);
+	const deleteTemplate = useSetAtom(templateStore.deleteTemplateAtom);
+	const renameTemplate = useSetAtom(templateStore.renameTemplate);
 
 	function handleSelect() {
 		if (active) {
@@ -63,10 +63,15 @@ export const Item = React.memo(function TemplateItem(
 					<Icon.EllipsisVertical />
 				</Menu.Trigger>
 				<Menu.Popup className="duration-0" side="left">
-					<Menu.Item nativeButton render={<button/>} onClick={() => setOpenRenameDialog(true)}>
+					<Menu.Item nativeButton render={<button />} onClick={() => setOpenRenameDialog(true)}>
 						Change name <Icon.Edit />
 					</Menu.Item>
-					<Menu.Item nativeButton render={<button/>} disabled={disabledDelete} onClick={() => deleteTemplate(id)}>
+					<Menu.Item
+						nativeButton
+						render={<button />}
+						disabled={disabledDelete}
+						onClick={() => deleteTemplate(id)}
+					>
 						Delete <Icon.Trash />
 					</Menu.Item>
 				</Menu.Popup>

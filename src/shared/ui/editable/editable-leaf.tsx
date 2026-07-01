@@ -1,5 +1,5 @@
-import type { RenderLeafProps } from 'slate-react';
 import { useEditableContext } from './editable-context';
+import type { RenderLeafProps } from 'slate-react';
 
 export function EditableLeaf({ attributes, children, leaf }: RenderLeafProps) {
 	const { fontColors, backgroundColors } = useEditableContext();

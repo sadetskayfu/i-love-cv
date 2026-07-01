@@ -1,0 +1,1 @@
+export * as templateStore from './index.parts'

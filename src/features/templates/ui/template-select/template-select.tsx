@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { useAtom } from 'jotai';
-import { templateSelectors } from '../../model';
-import { Dialog } from '@/shared/ui/dialog';
-import { CreateTemplateDialog } from '../create-template-dialog';
 import { Button } from '@/shared/ui/button';
+import { Dialog } from '@/shared/ui/dialog';
+import { templateStore } from '../../model';
+import { CreateTemplateDialog } from '../create-template-dialog';
 import { ItemList } from './item-list';
 
 export function TemplateSelect() {
 	const [open, setOpen] = React.useState<boolean>(false);
-	const [activeTemplateName] = useAtom(templateSelectors.activeTemplateName);
+	const [activeTemplateName] = useAtom(templateStore.activeTemplateName);
 
 	const closeDialog = React.useCallback(() => {
 		setOpen(false);
@@ -26,9 +26,7 @@ export function TemplateSelect() {
 				<div className="flex flex-col gap-y-2 p-2">
 					<ItemList onSelect={closeDialog} />
 					<CreateTemplateDialog onCreate={closeDialog}>
-						<Button color="secondary">
-							Add new template
-						</Button>
+						<Button color="secondary">Add new template</Button>
 					</CreateTemplateDialog>
 				</div>
 			</Dialog.Popup>

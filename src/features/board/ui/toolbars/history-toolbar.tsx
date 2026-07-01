@@ -1,15 +1,15 @@
-import { ButtonProvider, Button } from '@/shared/ui/button';
-import { Icon } from '@/shared/ui/icons';
-import { Tooltip, TooltipGroup } from '@/shared/ui/tooltip';
-import { Key } from '@/shared/ui/key';
 import { useAtom, useSetAtom } from 'jotai';
-import { boardActions, boardSelectors } from '../../model';
+import { Button, ButtonProvider } from '@/shared/ui/button';
+import { Icon } from '@/shared/ui/icons';
+import { Key } from '@/shared/ui/key';
+import { Tooltip, TooltipGroup } from '@/shared/ui/tooltip';
+import { historyStore } from '../../model/history';
 
 export function HistoryToolbar() {
-	const [hasUndo] = useAtom(boardSelectors.hasUndo);
-	const [hasRedo] = useAtom(boardSelectors.hasRedo);
-	const undo = useSetAtom(boardActions.undo);
-	const redo = useSetAtom(boardActions.redo);
+	const [hasUndo] = useAtom(historyStore.hasUndo);
+	const [hasRedo] = useAtom(historyStore.hasRedo);
+	const undo = useSetAtom(historyStore.undo);
+	const redo = useSetAtom(historyStore.redo);
 
 	return (
 		<div className="my-shadow-paper flex flex-col gap-y-1 rounded-md bg-white p-1">

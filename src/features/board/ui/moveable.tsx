@@ -1,8 +1,14 @@
-import MoveableComponent from 'react-moveable';
 import { useAtom, useSetAtom } from 'jotai';
-import { boardActions, boardSelectors, boardState } from '../model';
+import MoveableComponent from 'react-moveable';
 import { isNumber } from '@/shared/helpers';
 import type { NodeType } from '../model/types';
+import type { MoveableManagerInterface } from 'react-moveable';
+import { nodeManagerStore } from '../model/node-manager';
+import { nodeSelectionStore } from '../model/node-selection';
+import { nodeCustomizationStore } from '../model/node-customization';
+import { windowStore } from '../model/window';
+import { boardStore } from '../model/board';
+import { nodeDraggingStore } from '../model/node-dragging';
 
 type ParsedStyles = {
 	width: number | undefined;
@@ -49,37 +55,78 @@ function parseStyles(styles: {
 	return parsedStyles;
 }
 
-export function Moveable() {
-	const [nodes] = useAtom(boardState.nodesAtom);
-	const [selectedNodes] = useAtom(boardSelectors.selectedNodes);
-	const [unselectedNodes] = useAtom(boardSelectors.unselectedNodes);
-	const [selectedNodeIds] = useAtom(boardState.selectedNodeIdsAtom)
-	const [nodeIdInEdit, setNodeIdInEdit] = useAtom(boardState.nodeIdInEditAtom)
-	const [windowPosition] = useAtom(boardState.windowPositionAtom);
-	const [snapToGrid] = useAtom(boardState.snapToGrid)
-	const [snapToObject] = useAtom(boardState.snapToObject)
-	const setSelectedNodeIds = useSetAtom(boardState.selectedNodeIdsAtom)
-	const updateNodes = useSetAtom(boardActions.updateNodes);
-	const setIsNodeDragging = useSetAtom(boardState.isNodesDraggingAtom);
+const DimensionViewable = {
+	name: 'dimensionViewable',
+	render(moveable: MoveableManagerInterface) {
+		const rect = moveable.getRect();
+		const zoom = moveable.props.zoom ?? 1;
+		// Add key (required)
+		// Add class prefix moveable-(required)
+		console.log(`moveable props: ${moveable.props.zoom}`);
+		return (
+			<div
+				key="dimension-viewer"
+				className=""
+				style={{
+					position: 'absolute',
+					left: `${rect.width / 2}px`,
+					top: `${rect.height + 20}px`,
+					background: '#4af',
+					borderRadius: '2px',
+					padding: '2px 4px',
+					color: 'white',
+					whiteSpace: 'nowrap',
+					fontWeight: 'bold',
+					willChange: 'transform',
+					transform: `translate(-50%, 0px) scale(${1 * zoom})`,
+					transformOrigin: 'top',
+				}}
+			>
+				{Math.round(rect.offsetWidth)} x {Math.round(rect.offsetHeight)}
+			</div>
+		);
+	},
+};
 
-	const disabledDraggable = Boolean(selectedNodeIds.size === 1 && nodeIdInEdit && selectedNodeIds.has(nodeIdInEdit))
+export function Moveable() {
+	const [nodes] = useAtom(nodeManagerStore.nodesAtom);
+	const [selectedNodes] = useAtom(nodeSelectionStore.selectedDomNodes);
+	const [unselectedNodes] = useAtom(nodeSelectionStore.unselectedDomNodes);
+	const [selectedNodeIds] = useAtom(nodeSelectionStore.selectedNodeIdsAtom);
+	const [nodeIdInEdit, setNodeIdInEdit] = useAtom(nodeCustomizationStore.nodeIdInEditAtom);
+	const [zoom] = useAtom(windowStore.zoomAtom);
+	const [snapToGrid] = useAtom(boardStore.snapToGrid);
+	const [snapToObject] = useAtom(boardStore.snapToObject);
+	const setSelectedNodeIds = useSetAtom(nodeSelectionStore.selectedNodeIdsAtom);
+	const updateNodes = useSetAtom(nodeManagerStore.updateNodes);
+	const setIsNodeDragging = useSetAtom(nodeDraggingStore.isNodesDraggingAtom);
+
+	const disabledDraggable = Boolean(
+		selectedNodeIds.size === 1 && nodeIdInEdit && selectedNodeIds.has(nodeIdInEdit)
+	);
 
 	return (
 		<MoveableComponent
 			target={selectedNodes}
+			ables={[DimensionViewable]}
+			props={{
+				dimensionViewable: true,
+			}}
 			elementGuidelines={snapToObject ? unselectedNodes : undefined}
-			snappable={snapToObject? true : false}
+			snappable={snapToObject ? true : false}
 			draggable={!disabledDraggable}
 			resizable={true}
 			keepRatio={false}
 			rotatable={true}
-			renderDirections={['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se']}
-			throttleDrag={snapToGrid ? (windowPosition.zoom <= 0.6 ? 10 : 5) : 0}
-			throttleResize={snapToGrid ? (windowPosition.zoom <= 0.6 ? 10 : 5) : 0}
-			zoom={1 / windowPosition.zoom}
-			
-			
-			
+			edgeDraggable={true}
+			edge={['w', 'e', 'n', 's']}
+			renderDirections={['nw', 'ne', 'sw', 'se']}
+			throttleDrag={snapToGrid ? (zoom <= 0.6 ? 10 : 5) : 0}
+			throttleResize={snapToGrid ? (zoom <= 0.6 ? 10 : 5) : 0}
+			zoom={1 / zoom}
+			padding={10}
+			linePadding={15}
+			controlPadding={20}
 			snapRotationDegrees={[0, 90, 180, 270]}
 			snapDirections={{
 				top: true,
@@ -97,7 +144,6 @@ export function Moveable() {
 				center: true,
 				middle: true,
 			}}
-			
 			onRenderStart={() => {
 				setIsNodeDragging(true);
 			}}
@@ -111,7 +157,6 @@ export function Moveable() {
 				setIsNodeDragging(false);
 			}}
 			onDrag={event => {
-				console.log(event);
 				event.target.style.transform = event.style.transform;
 			}}
 			onDragEnd={event => {
@@ -122,8 +167,8 @@ export function Moveable() {
 				}
 
 				if (!event.isDrag) {
-					setNodeIdInEdit(nodeId)
-					return
+					setNodeIdInEdit(nodeId);
+					return;
 				}
 
 				const node = nodes.find(n => n.id === nodeId);
@@ -304,9 +349,9 @@ export function Moveable() {
 
 				events.forEach(event => {
 					if (!event.isDrag) {
-						const nodeId = event.inputEvent.target.dataset['id']
-						setSelectedNodeIds(new Set(nodeId ? [nodeId] : []))
-						console.log('drag end')
+						const nodeId = event.inputEvent.target.dataset['id'];
+						setSelectedNodeIds(new Set(nodeId ? [nodeId] : []));
+						console.log('drag end');
 					}
 
 					const nodeId = event.target.dataset.id;
@@ -493,7 +538,6 @@ export function Moveable() {
 					);
 				}
 			}}
-		>
-		</MoveableComponent>
+		></MoveableComponent>
 	);
 }

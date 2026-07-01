@@ -1,6 +1,6 @@
 import * as React from 'react';
-import ru from './locales/ru.json';
 import en from './locales/en.json';
+import ru from './locales/ru.json';
 
 export type Language = 'ru' | 'en';
 

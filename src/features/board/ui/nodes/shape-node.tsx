@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useAtomValue } from 'jotai';
-import { boardSelectors } from '../../model';
-import { BaseNode } from './base-node';
-import { NodeType } from '../../model/types';
-import { Editable } from '@/shared/ui/editable';
-import { EditableToolbar } from '../toolbars/editable-toolbar';
-import { Popover } from '@/shared/ui/popover';
 import { useMergedRefs } from '@/shared/hooks/use-merged-refs';
+import { Editable } from '@/shared/ui/editable';
+import { Popover } from '@/shared/ui/popover';
+import { nodeCustomizationStore } from '../../model/node-customization';
+import { nodeManagerStore } from '../../model/node-manager';
+import { NodeType } from '../../model/types';
+import { EditableToolbar } from '../toolbars/editable-toolbar';
+import { BaseNode } from './base-node';
 
 export const ShapeNode = React.memo(function ShapeNode({
 	ref,
@@ -14,18 +15,18 @@ export const ShapeNode = React.memo(function ShapeNode({
 	style,
 	...otherProps
 }: Omit<BaseNode.Props, 'position' | 'rotate'>) {
-	const nodeRef = React.useRef<HTMLDivElement>(null)
-	const editableRef = React.useRef<HTMLDivElement>(null)
-	const node = useAtomValue(boardSelectors.nodeById(id));
-	const isEditMode = useAtomValue(boardSelectors.isEditMode(id));
+	const nodeRef = React.useRef<HTMLDivElement>(null);
+	const editableRef = React.useRef<HTMLDivElement>(null);
+	const node = useAtomValue(nodeManagerStore.nodeById(id));
+	const isEditMode = useAtomValue(nodeCustomizationStore.isNodeInEditMode(id));
 
-	const mergedRef = useMergedRefs(ref, nodeRef)
+	const mergedRef = useMergedRefs(ref, nodeRef);
 
 	React.useEffect(() => {
 		if (isEditMode) {
-			editableRef.current?.focus()
+			//editableRef.current?.focus()
 		}
-	}, [isEditMode])
+	}, [isEditMode]);
 
 	if (!node || node.type !== 'shape') {
 		return null;
@@ -48,10 +49,16 @@ export const ShapeNode = React.memo(function ShapeNode({
 				readonly={!isEditMode}
 				fontColors={['#0000ff', '#7f00ff']}
 				backgroundColors={[undefined, '#0000ff', '#7f00ff']}
-				className='bg-red-500 py-2 px-1'
+				className="bg-red-500 py-2 px-1 "
 			>
 				<Popover.Root open={isEditMode}>
-					<Popover.Popup className='transition-none' side='top' initialFocus={false} anchor={nodeRef} sideOffset={60}>
+					<Popover.Popup
+						className="transition-none"
+						side="top"
+						initialFocus={false}
+						anchor={nodeRef}
+						sideOffset={60}
+					>
 						<EditableToolbar />
 					</Popover.Popup>
 				</Popover.Root>

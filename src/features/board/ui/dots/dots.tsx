@@ -1,29 +1,31 @@
 import * as React from 'react';
 import { useAtom } from 'jotai';
-import { boardState } from '../../model';
+import { boardStore } from '../../model/board';
+import { windowStore } from '../../model/window';
 import './dots.css';
 
 export function Dots() {
-	const [showGrid] = useAtom(boardState.showGrid)
-	const [windowPosition] = useAtom(boardState.windowPositionAtom);
-	
-	const baseGridSize = windowPosition.zoom <= 0.6 ? 40 : 20;
-	const baseBackgroundPosition = windowPosition.zoom <= 0.6 ? -6 : 0
+	const [showGrid] = useAtom(boardStore.showGrid);
+	const [windowPosition] = useAtom(windowStore.windowPositionAtom);
+	const [zoom] = useAtom(windowStore.zoomAtom);
+
+	const baseGridSize = zoom <= 0.6 ? 40 : 20;
+	const baseBackgroundPosition = zoom <= 0.6 ? -6 : 0;
 	//const dotSize = Math.max(1.5, windowPosition.zoom * 1.5);
-	const dotSize = windowPosition.zoom <= 0.6 ? 3 : 1.5
-	const windowX = windowPosition.x * -1 * windowPosition.zoom
-	const windowY = windowPosition.y * -1 * windowPosition.zoom
+	const dotSize = zoom <= 0.6 ? 3 : 1.5;
+	const windowX = windowPosition.x * -1 * zoom;
+	const windowY = windowPosition.y * -1 * zoom;
 
 	if (!showGrid) {
-		return null
+		return null;
 	}
 
 	return (
 		<div
 			style={
 				{
-					'--grid-size': baseGridSize * windowPosition.zoom + 'px',
-					'--dot-size': `${dotSize * windowPosition.zoom}px`,
+					'--grid-size': baseGridSize * zoom + 'px',
+					'--dot-size': `${dotSize * zoom}px`,
 					backgroundPosition: `${windowX + baseBackgroundPosition}px ${windowY + baseBackgroundPosition}px`,
 				} as React.CSSProperties
 			}

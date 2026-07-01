@@ -1,14 +1,14 @@
 import { useAtom } from 'jotai';
-import { templateSelectors, templateState } from '../../model';
-import { Item } from './item';
 import { ScrollArea } from '@/shared/ui/scroll-area';
+import { templateStore } from '../../model';
+import { Item } from './item';
 
 export function ItemList({ onSelect }: { onSelect: () => void }) {
-	const [templates] = useAtom(templateSelectors.templatesArrayReverse);
-	const [activeTemplateId] = useAtom(templateState.activeTemplateIdAtom);
+	const [templates] = useAtom(templateStore.templatesArrayReverse);
+	const [activeTemplateId] = useAtom(templateStore.activeTemplateIdAtom);
 
 	return (
-		<ScrollArea.Root className='max-h-50 min-h-0 flex flex-col'>
+		<ScrollArea.Root className="max-h-50 min-h-0 flex flex-col">
 			<ScrollArea.Viewport overflowShadow>
 				<ScrollArea.Content variablePadding>
 					{templates.map(template => (
@@ -23,7 +23,7 @@ export function ItemList({ onSelect }: { onSelect: () => void }) {
 					))}
 				</ScrollArea.Content>
 			</ScrollArea.Viewport>
-            <ScrollArea.Scrollbar />
+			<ScrollArea.Scrollbar />
 		</ScrollArea.Root>
 	);
 }

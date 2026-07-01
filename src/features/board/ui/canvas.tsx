@@ -1,23 +1,24 @@
 import { useAtom, useSetAtom } from 'jotai';
-import { Overlay } from './overlay';
-import { boardActions, boardState } from '../model';
-import { useBoardContext } from './board-context';
-import { positionOnScreenToCanvas } from '../helpers';
 import { cn } from 'tailwind-variants';
-import { useWindowDragging } from '../hooks/use-window-dragging';
+import { positionOnScreenToCanvas } from '../helpers';
+import { boardStore } from '../model/board';
+import { nodeManagerStore } from '../model/node-manager';
+import { useWindowDragging, windowStore } from '../model/window';
+import { useBoardContext } from './board-context';
 import { BoardContextMenu } from './board-context-menu';
+import { Overlay } from './overlay';
 
 export function Canvas({ children, ref, ...otherProps }: React.ComponentProps<'div'>) {
-	const [windowPosition] = useAtom(boardState.windowPositionAtom);
-	const [isWindowDragging] = useAtom(boardState.isWindowDraggingAtom);
-	const [mode] = useAtom(boardState.modeAtom);
-	const addTextNode = useSetAtom(boardActions.addTextNode);
-	const addShapeNode = useSetAtom(boardActions.addShapeNode);
-	const toggleMode = useSetAtom(boardActions.toggleMode);
+	const [windowPosition] = useAtom(windowStore.windowPositionAtom);
+	const [zoom] = useAtom(windowStore.zoomAtom);
+	const [isWindowDragging] = useAtom(windowStore.isWindowDraggingAtom);
+	const [mode] = useAtom(boardStore.modeAtom);
+	const addShapeNode = useSetAtom(nodeManagerStore.addShapeNode);
+	const toggleMode = useSetAtom(boardStore.toggleMode);
 
 	const { canvasRect } = useBoardContext();
 
-	const { onPointerDown: handleWindowDraggingPointerDown } = useWindowDragging(canvasRect);
+	const { handleWindowDraggingPointerDown } = useWindowDragging(canvasRect);
 
 	return (
 		<div
@@ -31,22 +32,12 @@ export function Canvas({ children, ref, ...otherProps }: React.ComponentProps<'d
 					return;
 				}
 
-				if (mode === 'add-text-node') {
-					addTextNode(
-						positionOnScreenToCanvas(
-							{ x: event.clientX, y: event.clientY },
-							windowPosition,
-							canvasRect
-						)
-					);
-					toggleMode('selection', false, false);
-				}
-
 				if (mode === 'add-shape-node') {
 					addShapeNode(
 						positionOnScreenToCanvas(
 							{ x: event.clientX, y: event.clientY },
 							windowPosition,
+							zoom,
 							canvasRect
 						)
 					);
@@ -61,7 +52,7 @@ export function Canvas({ children, ref, ...otherProps }: React.ComponentProps<'d
 			<div
 				className="origin-top-left"
 				style={{
-					transform: `scale(${windowPosition.zoom}) translate(${-windowPosition.x}px, ${-windowPosition.y}px)`,
+					transform: `scale(${zoom}) translate(${-windowPosition.x}px, ${-windowPosition.y}px)`,
 				}}
 			>
 				{children}

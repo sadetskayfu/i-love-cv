@@ -1,16 +1,22 @@
 import * as React from 'react';
 import { useSetAtom } from 'jotai';
-import { Dialog } from '@/shared/ui/dialog';
 import { Button } from '@/shared/ui/button';
+import { Dialog } from '@/shared/ui/dialog';
 import { Input } from '@/shared/ui/input';
 import { MaxLengthIndicator } from '@/shared/ui/max-length-indicator';
-import { validateTemplateName, MAX_TEMPLATE_NAME_LENGTH } from '../validation';
-import { templateActions } from '../model';
+import { MAX_TEMPLATE_NAME_LENGTH, validateTemplateName } from '../validation';
+import { templateStore } from '../model';
 
-export function CreateTemplateDialog({ children, onCreate }: { children: React.ReactElement, onCreate?: () => void }) {
+export function CreateTemplateDialog({
+	children,
+	onCreate,
+}: {
+	children: React.ReactElement;
+	onCreate?: () => void;
+}) {
 	const [open, setOpen] = React.useState<boolean>(false);
 	const [name, setName] = React.useState<string>('');
-	const createTemplate = useSetAtom(templateActions.createTemplate);
+	const createTemplate = useSetAtom(templateStore.createTemplate);
 
 	const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -19,12 +25,12 @@ export function CreateTemplateDialog({ children, onCreate }: { children: React.R
 
 		if (typeof templateName === 'string') {
 			createTemplate(templateName);
-            onCreate?.()
+			onCreate?.();
 			setOpen(false);
 
 			setTimeout(() => {
 				setName('');
-			}, 200)
+			}, 200);
 		}
 	}
 
@@ -51,15 +57,11 @@ export function CreateTemplateDialog({ children, onCreate }: { children: React.R
 								}
 							}}
 							placeholder="Input template name.."
-							
 						/>
 						<MaxLengthIndicator value={name} maxLength={MAX_TEMPLATE_NAME_LENGTH} />
 					</div>
 					<div className="ml-auto flex gap-x-2">
-						<Button
-							onClick={handleCreateTemplate}
-							disabled={name.length === 0}
-						>
+						<Button onClick={handleCreateTemplate} disabled={name.length === 0}>
 							Create template
 						</Button>
 					</div>

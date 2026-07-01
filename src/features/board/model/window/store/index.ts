@@ -1,0 +1,1 @@
+export * as windowStore from './index.parts'

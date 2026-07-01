@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { useSlate } from 'slate-react';
-import { Icon } from '@/shared/ui/icons';
-import { isActive } from '../helpers/is-active';
+import { mergeProps, useRender } from '@base-ui/react';
 import { Node, Transforms } from 'slate';
-import { isListType } from '../helpers/is-list-type';
-import { mergeProps, useRender, type ComponentRenderFn, type HTMLProps } from '@base-ui/react';
+import { useSlate } from 'slate-react';
 import { useTranslation } from '@/shared/translation';
+import { Icon } from '@/shared/ui/icons';
 import { EDITABLE_BUTTON_LABELS } from '../editable-button-labels';
+import { isActive } from '../helpers/is-active';
+import { isListType } from '../helpers/is-list-type';
 import type { ElementType } from '../editable-types';
+import type { ComponentRenderFn, HTMLProps } from '@base-ui/react';
 
 export function EditableBlockTypeButton({
 	ref,

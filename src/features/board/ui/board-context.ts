@@ -4,6 +4,7 @@ import type { ElementRect } from '@/shared/hooks/use-element-rect';
 
 export type BoardContext = {
 	rootRef: React.RefObject<HTMLDivElement | null>;
+	customizationToolbarPortalTargetRef: React.RefObject<HTMLDivElement | null>;
 	canvasRect: ElementRect | null;
 };
 

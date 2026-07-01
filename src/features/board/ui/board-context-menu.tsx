@@ -1,21 +1,21 @@
 import * as React from 'react';
-import { ContextMenu } from '@/shared/ui/context-menu';
 import { useAtom, useSetAtom } from 'jotai';
-import { boardActions, boardState } from '../model';
+import { ContextMenu } from '@/shared/ui/context-menu';
 import { Separator } from '@/shared/ui/separator';
+import { boardStore } from '../model/board';
+import { windowStore } from '../model/window';
+import { nodeManagerStore } from '../model/node-manager';
 
 export function BoardContextMenu({
 	children,
 	...otherProps
 }: ContextMenu.Root.Props & { children: React.ReactElement<HTMLDivElement> }) {
 	const [open, setOpen] = React.useState<boolean>(false);
-
-	const [showGrid, setShowGrid] = useAtom(boardState.showGrid);
-	const [snapToGrid, setSnapToGrid] = useAtom(boardState.snapToGrid);
-	const [snapToObject, setSnapToObject] = useAtom(boardState.snapToObject);
-
-	const [hasWindowDragging] = useAtom(boardState.hasWindowDraggingAtom);
-	const pasteNodes = useSetAtom(boardActions.pasteNodes);
+	const [showGrid, setShowGrid] = useAtom(boardStore.showGrid);
+	const [snapToGrid, setSnapToGrid] = useAtom(boardStore.snapToGrid);
+	const [snapToObject, setSnapToObject] = useAtom(boardStore.snapToObject);
+	const [hasWindowDragging] = useAtom(windowStore.hasWindowDraggingAtom);
+	const pasteNodes = useSetAtom(nodeManagerStore.pasteNodes);
 
 	return (
 		<ContextMenu.Root

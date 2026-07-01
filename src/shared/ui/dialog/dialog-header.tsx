@@ -1,7 +1,7 @@
-import { cn } from 'tailwind-variants';
 import { Dialog } from '@base-ui/react';
-import { Icon } from '@/shared/ui/icons';
+import { cn } from 'tailwind-variants';
 import { Button } from '@/shared/ui/button';
+import { Icon } from '@/shared/ui/icons';
 
 export function DialogHeader({ children, className }: DialogHeader.Props) {
 	return (

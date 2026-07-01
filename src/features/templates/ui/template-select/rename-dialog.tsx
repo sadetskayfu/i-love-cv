@@ -1,9 +1,9 @@
 import * as React from 'react';
+import { Button } from '@/shared/ui/button';
 import { Dialog } from '@/shared/ui/dialog';
 import { Input } from '@/shared/ui/input';
 import { MaxLengthIndicator } from '@/shared/ui/max-length-indicator';
-import { Button } from '@/shared/ui/button';
-import { validateTemplateName, MAX_TEMPLATE_NAME_LENGTH } from '../../validation';
+import { MAX_TEMPLATE_NAME_LENGTH, validateTemplateName } from '../../validation';
 
 export function RenameDialog({
 	open,

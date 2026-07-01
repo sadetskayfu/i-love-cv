@@ -1,14 +1,11 @@
 import * as React from 'react';
 import { useAtom } from 'jotai';
-import { boardState } from '../model';
-import { useNodes } from '../hooks/use-nodes';
+import { nodeManagerStore, useNodes } from '../model/node-manager';
 import { ShapeNode } from './nodes/shape-node';
 
 export const NodeList = React.memo(function NodeList() {
-	const [nodes] = useAtom(boardState.nodesAtom);
+	const [nodes] = useAtom(nodeManagerStore.nodesAtom);
 	const { nodeRef } = useNodes();
-
-	console.log('Node list rerender', nodes);
 
 	return (
 		<React.Fragment>
