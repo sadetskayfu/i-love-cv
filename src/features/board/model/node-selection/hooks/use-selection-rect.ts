@@ -162,6 +162,7 @@ export function useSelectionRect(canvasRect: ElementRect | null) {
 		setIsRealSelection(false);
 		setIsSelection(false);
 		setSelectionRect(null);
+		setCandidateNodes(new Set())
 		clearCandidateNodes();
 	});
 

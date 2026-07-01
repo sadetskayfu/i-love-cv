@@ -1,14 +1,14 @@
 import { useAtom, useSetAtom } from 'jotai';
 import MoveableComponent from 'react-moveable';
 import { isNumber } from '@/shared/helpers';
-import type { NodeType } from '../model/types';
-import type { MoveableManagerInterface } from 'react-moveable';
+import { boardStore } from '../model/board';
+import { nodeCustomizationStore } from '../model/node-customization';
+import { nodeDraggingStore } from '../model/node-dragging';
 import { nodeManagerStore } from '../model/node-manager';
 import { nodeSelectionStore } from '../model/node-selection';
-import { nodeCustomizationStore } from '../model/node-customization';
 import { windowStore } from '../model/window';
-import { boardStore } from '../model/board';
-import { nodeDraggingStore } from '../model/node-dragging';
+import type { NodeType } from '../model/types';
+import type { MoveableManagerInterface } from 'react-moveable';
 
 type ParsedStyles = {
 	width: number | undefined;
